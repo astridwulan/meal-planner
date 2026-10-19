@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meal Planner Mingguan (hari ke samping)</title>
+<style id="pg">@page{size:A4 landscape;margin:8mm}</style>
+<style>
+:root{--bg:#faf8f4;--card:#fff;--ink:#2b2b28;--mut:#7b7a72;--line:#ddd7ca;--acc:#2f7f6f;--accI:#fff;--a:#dff1ec;--i:#ebe5f6;--s:#fbeedc;--d:#e3efc9;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#1d1d1b;--card:#262624;--ink:#ecebe6;--mut:#a09f96;--line:#3d3c38;--acc:#5fc4ae;--accI:#102a24;--a:#24413a;--i:#35304a;--s:#4a3a26;--d:#3d4a22}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1d1d1b;--card:#262624;--ink:#ecebe6;--mut:#a09f96;--line:#3d3c38;--acc:#5fc4ae;--accI:#102a24;--a:#24413a;--i:#35304a;--s:#4a3a26;--d:#3d4a22}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{padding:14px 16px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+h1{font-size:1.25rem;margin:0}
+nav{display:flex;gap:6px;padding:10px 16px}
+nav button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
+nav button.on,.btn.pri{background:var(--acc);color:var(--accI);border-color:var(--acc)}
+.tools{display:flex;gap:8px;align-items:center}
+select,input{font:inherit;color:inherit}
+select{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px}
+section{display:none;padding:0 16px 24px}section.on{display:block}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ph h2{margin:0;font-size:1.1rem}
+.leg{display:flex;gap:6px;font-size:.78rem;flex-wrap:wrap}
+.leg span,.r b{padding:1px 7px;border-radius:6px;font-weight:600}
+table{border-collapse:collapse;width:100%;min-width:1150px;table-layout:fixed}
+th,td{border:1px solid var(--line);padding:3px 4px;vertical-align:top}
+thead th{background:var(--acc);color:var(--accI);font-size:.85rem;padding:5px}
+th.day{width:84px;background:var(--bg);font-size:.9rem;text-align:center;vertical-align:middle}
+.r{display:grid;grid-template-columns:3.2em 1fr 1fr 1fr auto;gap:3px;align-items:center;margin:1px 0}
+.r b{font-size:.68rem;text-align:center;padding:2px 0}
+.r.b b,.leg .b{background:var(--a)}.r.d b,.leg .d{background:var(--d)}.r.i b,.leg .i{background:var(--i)}.r.s b,.leg .s{background:var(--s)}
+.r input{border:0;border-bottom:1px dotted var(--line);background:transparent;width:100%;min-width:0;padding:3px 2px;font-size:.8rem}
+.r input:focus{outline:0;border-bottom:1px solid var(--acc);background:var(--a)}
+.r.e{grid-template-columns:3.2em 1fr 1fr auto}.r.e b{grid-row:span 2;align-self:center}.r.e input:nth-of-type(1){grid-column:2/4;grid-row:1}.r.e input:nth-of-type(2){grid-column:2;grid-row:2}.r.e input:nth-of-type(3){grid-column:3;grid-row:2}.r.e>span{grid-column:4;grid-row:1}
+.r.e{margin:3px 0 6px}
+.r input.dash{color:var(--mut)}
+.same{grid-column:2/-1;font-size:.72rem;color:var(--mut)}
+.same button,.x{border:0;background:none;color:var(--acc);cursor:pointer;font-size:.72rem;padding:0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 8px;font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 11px;font-size:.85rem}
+.chip button{border:0;background:none;color:var(--mut);cursor:pointer;font-size:1rem;line-height:1}
+.add{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--bg);width:100%;max-width:260px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.idea{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card)}
+.idea small{color:var(--mut)}
+.shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.shop h3{margin:0 0 4px;font-size:1rem;color:var(--acc)}
+.shop h4{margin:10px 0 3px;font-size:.85rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.shop label{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted var(--line)}
+.shop em{color:var(--mut);font-style:normal;font-size:.82rem;margin-left:auto;text-align:right}
+.shop .qty{border:0;border-bottom:1px dotted var(--line);background:transparent;width:74px;font-size:.82rem;padding:1px 2px}.shop .mn{flex:1;width:auto;font-size:inherit}.shop .x{margin-left:4px}
+.note{color:var(--mut);font-size:.85rem}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;display:none;font-size:.85rem}
+.pt{display:none}
+#pvbar{display:none;position:sticky;top:0;z-index:5;gap:8px;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--acc);color:var(--accI);font-size:.9rem}
+body.pv #pvbar{display:flex}body.pv{background:#8a8a85}
+body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;color:#000;box-shadow:0 0 0 1px #bbb;padding:8mm}
+</style><style media="print">#pvbar{display:none!important}</style><style id="ps" media="print">
+ :root:root:root{color-scheme:light;--bg:#fff;--card:#fff;--ink:#000;--mut:#555;--line:#aaa;--acc:#2f7f6f;--accI:#fff;--a:#dff1ec;--i:#ebe5f6;--s:#fbeedc;--d:#e3efc9;padding:0}
+ body{background:#fff;font-size:10pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ header,nav,.noprint,.same button,.x{display:none!important}
+ section{padding:0}section:not(.on){display:none!important}
+ .scroll,.card{border:0;padding:0;overflow:visible}
+ table{min-width:0}tr{break-inside:avoid}
+ .r input{font-size:7.5pt;border-bottom:1px solid #ccc}.r input::placeholder{color:transparent}
+ .r b{font-size:6.5pt}
+ .same input::placeholder,.qty::placeholder{color:transparent}
+ .r input.dash{color:transparent;border-bottom-color:transparent}
+ .pt{display:block;font-size:10pt}
+</style></head><body>
+<header><h1>🍽️ Meal Planner (hari ke samping)</h1>
+<div class="tools"><select id="paper" aria-label="Ukuran kertas"><option value="A4">A4</option><option value="A3">A3</option></select><button class="btn" onclick="saveNow()">Simpan</button><button class="btn" onclick="pv(1)">Preview</button><button class="btn pri" onclick="doPrint()">Cetak</button></div></header>
+<div id="pvbar"><span>Preview cetak (<span id="pvs">A4</span> landscape)</span><span class="tools"><button class="btn" onclick="pv(0)">Kembali edit</button><button class="btn pri" onclick="doPrint()">Cetak</button></span></div>
+<nav><button data-t="plan" class="on">Planner</button><button data-t="ideas">Ide Menu</button><button data-t="shop">Belanja</button><button data-t="bank">Bank Menu</button></nav>
+
+<section id="plan" class="on">
+ <div class="ph"><h2>Menu minggu: <input type="date" id="wk" class="noprint" aria-label="Pilih tanggal dalam minggu ini" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:150px"> <span id="wkr"></span></h2>
+ <div class="leg"><span class="b">Abang</span><span class="d">Adek</span><span class="i">Ibu Bpk = Ibu &amp; Bapak</span><span class="s">Siti = Mba Siti</span></div></div>
+ <div class="scroll"><div id="grid"></div></div>
+ <p class="note noprint">Tiap slot: Protein · Sayur · Tambahan (tahu, tempe, sambal). Adek otomatis sama dengan Abang, Mba Siti sama dengan Ibu &amp; Bapak. Klik “ubah” kalau menunya beda. Isian pertama bebas diisi menu apa saja (misal “Koko Krunch”). Di Makan Malam ada tombol ↑ untuk menyamakan dengan makan siang. Tersimpan otomatis di browser ini.</p>
+</section>
+
+<section id="ideas">
+ <div class="card"><h3>Isi menu otomatis</h3>
+  <div class="row"><button class="btn pri" onclick="fillWeek()">Isi slot kosong se-minggu</button><button class="btn" onclick="if(confirm('Kosongkan seluruh planner?')){learnAll();S.plan={};S.same={};S.ls={};S.out={};S.off={};save();renderPlan();toast('Planner dikosongkan')}">Kosongkan planner</button></div>
+  <p class="note">Hanya mengisi slot yang masih kosong. Hasilnya tetap bisa diedit manual.</p></div>
+ <div class="grid2">
+  <div class="card"><h3>Abang: makanan favorit</h3><div class="chips" id="c-favb"></div><input class="add" data-add="favb" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Abang: alergi / tidak suka</h3><div class="chips" id="c-avb"></div><input class="add" data-add="avb" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Adek: makanan favorit</h3><div class="chips" id="c-favd"></div><input class="add" data-add="favd" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Adek: alergi / tidak suka</h3><div class="chips" id="c-avd"></div><input class="add" data-add="avd" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Protein yang gampang dibeli</h3><div class="chips" id="c-prot"></div><input class="add" data-add="prot" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Sayur yang tersedia</h3><div class="chips" id="c-veg"></div><input class="add" data-add="veg" placeholder="tambah, lalu Enter"></div>
+  <div class="card"><h3>Tambahan (tahu, tempe, sambal)</h3><div class="chips" id="c-ext"></div><input class="add" data-add="ext" placeholder="tambah, lalu Enter"></div>
+ </div>
+ <div class="card"><h3>Generate ide</h3>
+  <div class="row"><label>Untuk <select id="tw"></select></label><label>Hari <select id="td"></select></label><label>Slot <select id="tm"></select></label><label><input type="checkbox" id="ub" checked> sertakan menu dari bank</label><button class="btn pri" onclick="gen()">Acak ide</button></div>
+  <div id="out"><p class="note">Klik “Acak ide”, lalu “Pakai” untuk memasukkan ke slot yang dipilih.</p></div></div>
+</section>
+
+<section id="bank">
+ <div class="card"><h3>Bank menu</h3>
+  <p class="note">Menu yang lo isi di planner tersimpan otomatis di sini, dan jadi saran saat mengetik di minggu berikutnya. Menu dari kotak planner baru masuk bank saat lo pindah tab, menutup halaman, atau klik tombol di bawah.</p>
+  <div class="row"><button class="btn pri" onclick="learnAll();renderBank();toast('Menu di planner disimpan ke bank')">Simpan planner ke bank</button></div>
+  <div class="row"><label>Untuk <select id="bw"></select></label><label>Hari <select id="bd"></select></label><label>Slot <select id="bm"></select></label></div>
+  <input class="add" id="bq" placeholder="cari menu..." style="max-width:100%;margin-bottom:8px">
+  <div id="bl"></div></div>
+ <div class="card"><h3>Cadangan data</h3><p class="note">Data cuma tersimpan di browser ini. Klik Tampilkan, salin teksnya ke tempat aman (catatan atau chat ke diri sendiri). Untuk memulihkan, tempel teksnya lalu klik Muat.</p>
+  <textarea id="bk" rows="3" style="width:100%;font:inherit;background:var(--card);color:inherit;border:1px solid var(--line);border-radius:8px"></textarea>
+  <div class="row"><button class="btn" onclick="bkShow()">Tampilkan</button><button class="btn" onclick="bkLoad()">Muat</button></div></div>
+</section>
+<section id="shop">
+ <div class="ph"><h2>Daftar belanja minggu ini</h2><span class="noprint"><span class="note">Otomatis dari planner, bisa diedit</span> <button class="x" data-rs="1">pulihkan yang disembunyikan</button></span></div>
+ <div class="card noprint"><b>Porsi per orang</b> <span class="note">(jumlah porsi yang dihitung untuk tiap baris; Ibu Bpk = 2 orang)</span><div class="row"><label>Abang <input type="number" step="0.5" min="0" data-hc="b" style="width:62px"></label><label>Adek <input type="number" step="0.5" min="0" data-hc="d" style="width:62px"></label><label>Ibu Bpk <input type="number" step="0.5" min="0" data-hc="i" style="width:62px"></label><label>Siti <input type="number" step="0.5" min="0" data-hc="s" style="width:62px"></label></div></div>
+ <div class="card"><div class="shop" id="sl"></div></div>
+</section>
+<datalist id="dl0"></datalist><datalist id="dl1"></datalist><datalist id="dl2"></datalist>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const D=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+const M=[['sar','Sarapan'],['bek','Bekal Sekolah'],['sia','Makan Siang'],['mal','Makan Malam']];
+const W=[['b','Abang','Abang'],['d','Adek','Adek'],['i','Ibu Bpk','Ibu & Bapak'],['s','Siti','Mba Siti']];
+const LB={b:'Abang',d:'Adek',i:'Ibu Bpk',s:'Siti'},SM={d:'Abang',s:'Ibu &amp; Bapak'};
+const DEF={favb:['Nugget ayam','Telur dadar','Ayam goreng','Sosis','Perkedel'],favd:['Nugget ayam','Telur dadar','Ayam goreng','Sosis','Perkedel'],avb:[],avd:[],prot:['Ayam','Ikan kembung','Ikan dori','Udang','Cumi','Daging giling','Telur'],veg:['Bayam','Kangkung','Brokoli','Wortel','Buncis','Sawi hijau','Labu siam','Kol','Jagung'],ext:['Tahu','Tempe','Sambal','Kerupuk','Orek tempe']};
+let S={plan:{},same:{},ls:{},out:{},on:{},off:{},man:[],hid:{},qty:{},chk:{},bi:[{},{},{}],bc:{},hc:{b:1,d:1,i:2,s:1},wk:'',...JSON.parse(JSON.stringify(DEF))};
+try{const r=localStorage.getItem('mp1');if(r)S={...S,...JSON.parse(r)}}catch(e){}
+const save=()=>{try{localStorage.setItem('mp1',JSON.stringify(S))}catch(e){}};
+const g=k=>S.plan[k]||['','',''];
+const same=k=>S.same[k]!==false;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',2200)}
+
+function renderPlan(){
+ let h='<table><thead><tr><th style="width:84px"></th>'+D.map(d=>`<th>${d}</th>`).join('')+'</tr></thead><tbody>';
+ M.forEach(([mk,ml])=>{h+=`<tr><th class="day">${ml}</th>`;
+  D.forEach((d,di)=>{h+='<td>';
+   if(mk=='bek'&&S.off[di+mk]){h+=`<div class="same" style="padding:6px 2px;font-size:.85rem">🎒 <b>Tanpa bekal (libur)</b> <button data-off="${di+mk}">batal</button></div></td>`;return}
+   if(mk=='bek')h+=`<div class="noprint" style="text-align:right"><button class="x" data-off="${di+mk}">🚫 libur / tanpa bekal</button></div>`;
+   if(mk!='bek'&&S.out[di+mk]){h+=`<div class="same" style="padding:6px 2px;font-size:.85rem">🍴 <b>Makan di luar</b> <input data-o="${di+mk}" value="${esc(S.on[di+mk]||'')}" placeholder="di mana? (opsional)" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:60%"> <button data-out="${di+mk}">batal</button></div></td>`;return}
+   const L4=['b','d','i','s'];
+   if(mk=='mal'&&L4.every(w=>S.ls[di+w])){h+=`<div class="same" style="padding:6px 2px">Sama dgn makan siang <button data-l="${di}">ubah</button> <button data-out="${di+mk}">🍴 di luar</button></div></td>`;return}
+   if(mk!='bek')h+=`<div class="noprint" style="text-align:right">${mk=='mal'?`<button class="x" data-la="${di}">↑ semua sama dgn siang</button>`:''}<button class="x" data-out="${di+mk}">🍴 makan di luar</button></div>`;
+   (mk=='bek'?['b','d']:L4).forEach(w=>{const s=LB[w];
+    const key=`${di}|${mk}|${w}`;
+    if(SM[w]&&same(di+mk+w)){h+=`<div class="r ${w}"><b>${s}</b><span class="same">sama dgn ${SM[w]} <button data-t="${di+mk+w}">ubah</button></span></div>`;return}
+    if(mk=='mal'&&S.ls[di+w]){h+=`<div class="r ${w}"><b>${s}</b><span class="same">sama dgn makan siang <button data-l="${di}${w}">ubah</button></span></div>`;return}
+    const v=g(key);
+    h+=`<div class="r ${w} e"><b>${s}</b>`+[0,1,2].map(i=>`<input data-k="${key}" data-i="${i}" list="dl${i}" value="${esc(v[i])}"${v[i].trim()=='-'?' class="dash"':''} placeholder="${['Protein / menu','Sayur','+ Tambahan'][i]}">`).join('')+'<span>'+(SM[w]?`<button class="x" data-t="${di+mk+w}" title="samakan">=</button>`:'')+(mk=='mal'?`<button class="x" data-l="${di}${w}" title="samakan dgn makan siang">↑</button>`:'')+'</span>'+'</div>';
+   });h+='</td>'});h+='</tr>'});
+ $('grid').innerHTML=h+'</tbody></table>';
+}
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop()}
+ if(t.id=='wk'){S.wk=t.value;save();wkr()}
+ if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save()}
+ if(t.dataset.hc){S.hc[t.dataset.hc]=parseFloat(t.value)||0;save();renderShop()}
+ if(t.id=='bq')renderBank();
+ if(t.dataset.q!==undefined){S.qty[t.dataset.q]=t.value;save()}
+ if(t.dataset.m!==undefined){const m=S.man.find(x=>x.id==t.dataset.m);if(m){m.t=t.value;save()}}
+ if(t.dataset.c!==undefined){S.chk[t.dataset.c]=t.checked;save()}});
+document.addEventListener('click',e=>{const t=e.target;
+ if(t.dataset.t&&t.closest('#grid')){S.same[t.dataset.t]=!same(t.dataset.t);save();renderPlan();renderShop()}
+ if(t.dataset.tab||t.closest('nav')&&t.dataset.t){tab(t.dataset.t)}
+ if(t.dataset.l!==undefined){const k=t.dataset.l;if(k.length==1)['b','d','i','s'].forEach(w=>S.ls[k+w]=false);else S.ls[k]=!S.ls[k];save();renderPlan();renderShop()}
+ if(t.dataset.la!==undefined){['b','d','i','s'].forEach(w=>S.ls[t.dataset.la+w]=true);save();renderPlan();renderShop()}
+ if(t.dataset.pb!==undefined)putBank(t.dataset.pb);
+ if(t.dataset.db!==undefined){delete S.bc[t.dataset.db];save();renderBank()}
+ if(t.dataset.h!==undefined){S.hid[t.dataset.h]=true;save();renderShop()}
+ if(t.dataset.md!==undefined){S.man=S.man.filter(m=>m.id!=t.dataset.md);save();renderShop()}
+ if(t.dataset.rs){S.hid={};save();renderShop()}
+ if(t.dataset.off!==undefined){S.off[t.dataset.off]=!S.off[t.dataset.off];save();renderPlan();renderShop()}
+ if(t.dataset.out!==undefined){S.out[t.dataset.out]=!S.out[t.dataset.out];save();renderPlan();renderShop()}
+ if(t.dataset.del){const[k,i]=t.dataset.del.split(':');S[k].splice(i,1);save();chips()}});
+document.addEventListener('keydown',e=>{const t=e.target;
+ if(e.key=='Enter'&&t.dataset.ms&&t.value.trim()){const g=t.dataset.ms;S.man.push({id:Date.now(),g,t:t.value.trim()});save();renderShop();const el=document.querySelector('[data-ms="'+g+'"]');if(el)el.focus();return}
+ if(e.key=='Enter'&&t.dataset.add&&t.value.trim()){S[t.dataset.add].push(t.value.trim());t.value='';save();chips()}});
+function tab(n){learnAll();document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==n));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==n));if(n=='shop')renderShop();if(n=='bank')renderBank()}
+function doPrint(){try{window.print()}catch(e){}toast('Jendela cetak tidak muncul? Tekan Ctrl+P (Cmd+P di Mac)')}
+$('paper').onchange=e=>$('pg').textContent=`@page{size:${e.target.value} landscape;margin:${e.target.value=='A3'?'10mm':'8mm'}}`;
+
+function calcOld(){
+ const bulk={},daily={sayur:{},nabati:{},lain:{}},nab=/tahu|tempe|oncom|tauge|kacang/i;
+ D.forEach((d,di)=>M.forEach(([mk])=>{const seen=new Set();if(S.out[di+mk]||S.off[di+mk])return;
+  W.forEach(([w])=>{if(mk=='bek'&&w!='b'&&w!='d')return;let kk=`${di}|${mk}|${w}`,m2=mk;if(mk=='mal'&&S.ls[di+w]){if(S.out[di+'sia'])return;kk=`${di}|sia|${w}`;m2='sia'}if(SM[w]&&same(di+m2+w))return;
+   g(kk).forEach((x,i)=>x.split(/,|\+/).map(s=>s.trim().toLowerCase()).filter(s=>s&&s!='-').forEach(it=>{
+    const id=i+'|'+it;if(seen.has(id))return;seen.add(id);
+    const grp=nab.test(it)?'nabati':i==0?'bulk':i==1?'sayur':'lain';
+    const t=grp=='bulk'?bulk:daily[grp];(t[it]=t[it]||[]).push(d.slice(0,3));}));});}));
+ return{bulk,daily};
+}
+function list(o,bulk){const k=Object.keys(o).sort();if(!k.length)return'<p class="note">-</p>';
+ return k.map(n=>`<label><input type="checkbox"><span>${esc(cap(n))}</span><em>${bulk?o[n].length+' slot':[...new Set(o[n])].join(', ')}${bulk?'':' · '+o[n].length+'×'}</em></label>`).join('')}
+function renderShop(){const{bulk,daily}=calc();
+ const empty=!Object.keys(bulk).length&&!Object.keys(daily.sayur).length&&!Object.keys(daily.nabati).length&&!Object.keys(daily.lain).length;
+ if(empty){$('sl').innerHTML='<p class="note">Isi planner dulu, daftar belanja muncul otomatis.</p>';return}
+ $('sl').innerHTML=`<div><h3>Minggu: protein utama (meal prep)</h3><p class="note">Beli in bulk, porsikan &amp; simpan untuk 1 minggu.</p>${list(bulk,true)}</div>
+ <div><h3>Belanja harian (segar)</h3><h4>Sayur</h4>${list(daily.sayur)}<h4>Nabati</h4>${list(daily.nabati)}<h4>Bumbu &amp; tambahan</h4>${list(daily.lain)}</div>`}
+
+function chips(){['favb','favd','avb','avd','prot','veg','ext'].forEach(k=>$('c-'+k).innerHTML=S[k].map((x,i)=>`<span class="chip">${esc(x)} <button data-del="${k}:${i}" aria-label="hapus">×</button></span>`).join(''))}
+const pick=a=>a[Math.random()*a.length|0];
+const bad=(x,w)=>(S['av'+w]||[]).some(a=>a&&String(x).toLowerCase().includes(a.toLowerCase()));
+function idea(w){const kd=w=='b'||w=='d',ok=a=>kd?a.filter(x=>!bad(x,w)):a,F=kd?ok(S['fav'+w]||[]):[],V=ok(S.veg),E=ok(S.ext),Pr=ok(S.prot);const P=F.length&&Math.random()<.7?F:(Pr.length?Pr:F);
+ return[P.length?pick(P):'',V.length?pick(V):'',E.length&&Math.random()<.6?pick(E):'']}
+function gen(){const w=$('tw').value,seen=new Set(),out=[];
+ for(let n=0;n<60&&out.length<6;n++){const x=(Math.random()<.5&&$('ub').checked&&bp(w))||idea(w),k=x.join('|');if(!seen.has(k)){seen.add(k);out.push(x)}}
+ window._ideas=out;
+ $('out').innerHTML=out.map((x,i)=>`<div class="idea"><div><b>${esc(x[0])}</b> + ${esc(x[1])}${x[2]?' + '+esc(x[2]):''}</div><button class="btn" onclick="use(${i})">Pakai</button></div>`).join('')||'<p class="note">Tambahkan bahan dulu.</p>'}
+function use(i){let w=$('tw').value,m=$('tm').value;if(m=='bek'&&(w=='i'||w=='s'))w='b';const d=$('td').value;
+ S.plan[`${d}|${m}|${w}`]=window._ideas[i];if(SM[w])S.same[d+m+w]=false;let wn='';if(w=='b'&&same(d+m+'d')&&window._ideas[i].some(x=>bad(x,'d'))){S.same[d+m+'d']=false;wn=' (baris Adek dipisah: ada pantangan)'}save();renderPlan();renderShop();
+ toast(`Masuk: ${D[d]} · ${M.find(x=>x[0]==m)[1].split(' (')[0]}${wn}`)}
+function fillWeek(){D.forEach((d,di)=>M.forEach(([mk])=>(mk=='bek'?['b']:['b','i']).forEach(w=>{
+ const k=`${di}|${mk}|${w}`;if(!g(k).some(Boolean)&&!S.out[di+mk]&&!S.off[di+mk]){S.plan[k]=idea(w);if(w=='b'&&same(di+mk+'d')&&S.plan[k].some(x=>bad(x,'d'))){S.same[di+mk+'d']=false;S.plan[di+'|'+mk+'|d']=idea('d')}}})));save();renderPlan();renderShop();toast('Slot kosong terisi, silakan edit')}
+
+$('tw').innerHTML=W.map(w=>`<option value="${w[0]}">${w[2]}</option>`).join('');
+$('td').innerHTML=D.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
+$('tm').innerHTML=M.map(m=>`<option value="${m[0]}">${m[1].split(' (')[0]}</option>`).join('');
+const GR=[['sayur','Sayur'],['nabati','Nabati (tahu, tempe)'],['lain','Bumbu & tambahan']];
+function rows(g,A){
+ const auto=Object.keys(A).filter(n=>!S.hid[g+'|'+n]).sort().map(n=>{const k=g+'|'+n,a=A[n],info=pf(a);
+  return`<label><input type="checkbox" data-c="${esc(k)}"${S.chk[k]?' checked':''}><span>${esc(cap(n))}</span><input class="qty" data-q="${esc(k)}" value="${esc(S.qty[k]||'')}" placeholder="jumlah"><em>${info}</em><button class="x" data-h="${esc(k)}" title="sembunyikan">✕</button></label>`}).join('');
+ const man=S.man.filter(m=>m.g==g).map(m=>`<label><input type="checkbox" data-c="m${m.id}"${S.chk['m'+m.id]?' checked':''}><input class="qty mn" data-m="${m.id}" value="${esc(m.t)}"><button class="x" data-md="${m.id}" title="hapus">✕</button></label>`).join('');
+ return auto+man+`<div class="noprint"><input class="add" data-ms="${g}" placeholder="+ tambah item, lalu Enter" style="margin-top:4px"></div>`}
+function renderShop(){const{bulk,daily}=calc(),A={bulk,sayur:daily.sayur,nabati:daily.nabati,lain:daily.lain};
+ $('sl').innerHTML=`<div><h3>Minggu: protein utama (meal prep)</h3><p class="note">Beli in bulk, porsikan &amp; simpan untuk 1 minggu.</p>${rows('bulk',A.bulk)}</div><div><h3>Belanja harian (segar)</h3>${GR.map(([g,t])=>`<h4>${t}</h4>${rows(g,A[g])}`).join('')}</div>`}
+function learn(k,full){const v=g(k);
+ v.forEach((x,i)=>x.split(/,|\+/).map(s=>s.trim()).filter(s=>s&&s!='-').forEach(s=>{const l=s.toLowerCase(),o=S.bi[i];if(!o[l])o[l]={n:s,t:Date.now()}}));
+ if(full){const c=v.map(x=>x.trim()=='-'?'':x.trim());if(c[0]){const ck=c.join('|').toLowerCase();if(!S.bc[ck])S.bc[ck]={v:c,t:Date.now()}}}}
+function dls(){[0,1,2].forEach(i=>$('dl'+i).innerHTML=Object.values(S.bi[i]).sort((a,b)=>b.t-a.t).map(o=>`<option value="${esc(o.n)}">`).join(''))}
+function learnAll(){Object.keys(S.plan).forEach(k=>learn(k,1));save();dls()}
+function put(v,w,m,d){if(m=='bek'&&(w=='i'||w=='s'))w='b';S.plan[`${d}|${m}|${w}`]=v.slice();if(SM[w])S.same[d+m+w]=false;let wn='';if(w=='b'&&same(d+m+'d')&&v.some(x=>bad(x,'d'))){S.same[d+m+'d']=false;wn=' (baris Adek dipisah: ada pantangan)'}save();renderPlan();renderShop();toast(`Masuk: ${D[d]} · ${M.find(x=>x[0]==m)[1]}${wn}`)}
+function putBank(k){const c=S.bc[k];if(c)put(c.v,$('bw').value,$('bm').value,$('bd').value)}
+function bp(w){const kd=w=='b'||w=='d',L=Object.values(S.bc).filter(c=>!kd||!c.v.some(x=>bad(x,w)));return L.length?pick(L).v.slice():null}
+function renderBank(){const q=($('bq').value||'').toLowerCase();
+ const L=Object.entries(S.bc).filter(([k])=>k.includes(q)).sort((a,b)=>b[1].t-a[1].t);
+ $('bl').innerHTML=L.length?L.map(([k,c])=>{const v=c.v,w=['b','d'].filter(z=>v.some(x=>bad(x,z))).map(z=>z=='b'?'Abang':'Adek');
+  return`<div class="idea"><div><b>${esc(v[0])}</b>${v[1]?' + '+esc(v[1]):''}${v[2]?' + '+esc(v[2]):''}${w.length?`<br><small>⚠ ada pantangan ${w.join(' & ')}</small>`:''}</div><span><button class="btn" data-pb="${esc(k)}">Pakai</button> <button class="x" data-db="${esc(k)}" title="hapus">✕</button></span></div>`}).join(''):'<p class="note">Belum ada menu. Isi planner, nanti menu tersimpan otomatis di sini.</p>'}
+function bkShow(){$('bk').value=JSON.stringify(S)}
+function bkLoad(){try{S={...S,...JSON.parse($('bk').value)};save();renderPlan();chips();dls();renderShop();renderBank();toast('Data dimuat')}catch(e){toast('Teks cadangan tidak valid')}}
+document.addEventListener('change',e=>{const k=e.target.dataset.k;if(k){learn(k);save();dls()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)learnAll()});addEventListener('pagehide',learnAll);
+$('bw').innerHTML=W.map(w=>`<option value="${w[0]}">${w[2]}</option>`).join('');
+$('bd').innerHTML=D.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
+$('bm').innerHTML=M.map(m=>`<option value="${m[0]}">${m[1]}</option>`).join('');
+function eff(di,mk,w){
+ if(S.out[di+mk]||S.off[di+mk])return null;
+ if(mk=='bek'&&w!='b'&&w!='d')return null;
+ if(mk=='mal'&&S.ls[di+w]){if(S.out[di+'sia']||S.off[di+'sia'])return null;return eff(di,'sia',w)}
+ if(SM[w]&&same(di+mk+w))return eff(di,mk,w=='d'?'b':'i');
+ return g(`${di}|${mk}|${w}`)}
+function calc(){const bulk={},daily={sayur:{},nabati:{},lain:{}},nab=/tahu|tempe|oncom|tauge|kacang/i,hc=S.hc||{b:1,d:1,i:2,s:1};
+ D.forEach((d,di)=>M.forEach(([mk])=>W.forEach(([w])=>{const v=eff(di,mk,w);if(!v)return;const n=+hc[w]||0;if(!n)return;const seen=new Set();
+  v.forEach((x,i)=>x.split(/,|\+/).map(s=>s.trim().toLowerCase()).filter(s=>s&&s!='-').forEach(it=>{const id=i+'|'+it;if(seen.has(id))return;seen.add(id);
+   const grp=nab.test(it)?'nabati':i==0?'bulk':i==1?'sayur':'lain',t=grp=='bulk'?bulk:daily[grp],o=t[it]=t[it]||{n:0,d:{}},dd=d.slice(0,3);o.n+=n;o.d[dd]=(o.d[dd]||0)+n}))})));
+ return{bulk,daily}}
+const fm=x=>String(Math.round(x*10)/10);
+const pf=a=>fm(a.n)+' porsi · '+Object.entries(a.d).map(([k,v])=>k+' '+fm(v)).join(', ');
+function iso(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
+function wkr(){const v=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?S.wk:'';if(!v){S.wk='';$('wk').value='';$('wkr').textContent='........... s/d ...........';return}
+ const d=new Date(v+'T00:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);const e=new Date(d);e.setDate(e.getDate()+6);
+ const f=x=>x.getDate()+' '+['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][x.getMonth()]+' '+x.getFullYear();
+ S.wk=iso(d);$('wk').value=S.wk;save();$('wkr').textContent=f(d)+' s/d '+f(e)}
+function saveNow(){learnAll();save();const n=new Date();toast('Tersimpan ✓ '+n.getHours()+':'+String(n.getMinutes()).padStart(2,'0'))}
+function pv(on){$('ps').media=on?'all':'print';document.body.classList.toggle('pv',on);if(on){learnAll();document.body.style.setProperty('--pw',$('paper').value=='A3'?'420mm':'297mm');$('pvs').textContent=$('paper').value;scrollTo(0,0)}}
+$('paper').addEventListener('change',()=>{if(document.body.classList.contains('pv'))pv(1)});
+Object.keys(S.hc).forEach(k=>{const e=document.querySelector('[data-hc="'+k+'"]');if(e)e.value=S.hc[k]});
+wkr();
+learnAll();renderPlan();chips();renderShop();
+</script></body></html>
