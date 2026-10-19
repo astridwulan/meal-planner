@@ -29,7 +29,7 @@ th,td{border:1px solid var(--line);padding:3px 4px;vertical-align:top}
 thead th{background:var(--acc);color:var(--accI);font-size:.85rem;padding:5px}
 th.day{width:62px;background:var(--bg);font-size:.9rem;text-align:center;vertical-align:middle}
 .r{display:grid;grid-template-columns:3.2em 1fr 1fr 1fr auto;gap:3px;align-items:center;margin:1px 0}
-.r b{font-size:.68rem;text-align:center;padding:2px 0}
+.r b{font-size:.9rem;text-align:center;padding:2px 0}
 .r.b b,.leg .b{background:var(--a)}.r.d b,.leg .d{background:var(--d)}.r.i b,.leg .i{background:var(--i)}.r.s b,.leg .s{background:var(--s)}
 .r input{border:0;border-bottom:1px dotted var(--line);background:transparent;width:100%;min-width:0;padding:3px 2px;font-size:.8rem}
 .r input:focus{outline:0;border-bottom:1px solid var(--acc);background:var(--a)}
@@ -55,6 +55,12 @@ th.day{width:62px;background:var(--bg);font-size:.9rem;text-align:center;vertica
 .note{color:var(--mut);font-size:.85rem}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;display:none;font-size:.85rem}
 .pt{display:none}
+.pcell{display:none}
+.pl{display:flex;gap:4px;align-items:baseline;margin:2px 0;font-size:var(--pf,8.5pt);line-height:1.25}
+.pl b{flex:none;padding:0 4px;border-radius:6px;font-size:1.05em;white-space:nowrap}
+.pl span{flex:1;min-width:0;overflow-wrap:anywhere}
+.pl.o{font-style:italic;color:var(--mut)}
+.pl.b b{background:var(--a)}.pl.d b{background:var(--d)}.pl.i b{background:var(--i)}.pl.s b{background:var(--s)}
 #pvbar{display:none;position:sticky;top:0;z-index:5;gap:8px;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--acc);color:var(--accI);font-size:.9rem}
 body.pv #pvbar{display:flex}body.pv{background:#8a8a85}
 body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;color:#000;box-shadow:0 0 0 1px #bbb;padding:8mm}
@@ -68,6 +74,8 @@ body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;co
  .r input{font-size:7.5pt;border-bottom:1px solid #ccc}.r input::placeholder{color:transparent}
  .r b{font-size:6.5pt}
  .same input::placeholder,.qty::placeholder{color:transparent}
+ .scell{display:none!important}
+ .pcell{display:block}
  .r input.dash{color:transparent;border-bottom-color:transparent}
  .pt{display:block;font-size:10pt}
 </style></head><body>
@@ -78,7 +86,7 @@ body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;co
 
 <section id="plan" class="on">
  <div class="ph"><h2>Menu minggu: <input type="date" id="wk" class="noprint" aria-label="Pilih tanggal dalam minggu ini" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:150px"> <span id="wkr"></span></h2>
- <div class="leg"><span class="b">Abang</span><span class="d">Adek</span><span class="i">Ibu Bpk = Ibu &amp; Bapak</span><span class="s">Siti = Mba Siti</span></div></div>
+ <div class="leg"><span class="b">👦🏻 Abang</span><span class="d">🧒🏻 Adek</span><span class="i">🧔🏻‍♂️👩🏻 Ibu &amp; Bapak</span><span class="s">🧕🏼 Mba Siti</span></div></div>
  <div class="scroll"><div id="grid"></div></div>
  <p class="note noprint">Tiap slot: Protein · Sayur · Tambahan (tahu, tempe, sambal). Adek otomatis sama dengan Abang, Mba Siti sama dengan Ibu &amp; Bapak. Klik “ubah” kalau menunya beda. Isian pertama bebas diisi menu apa saja (misal “Koko Krunch”). Di Makan Malam ada tombol ↑ untuk menyamakan dengan makan siang. Tersimpan otomatis di browser ini.</p>
 </section>
@@ -125,7 +133,7 @@ const $=id=>document.getElementById(id);
 const D=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
 const M=[['sar','Sarapan'],['bek','Bekal Sekolah'],['sia','Makan Siang'],['mal','Makan Malam']];
 const W=[['b','Abang','Abang'],['d','Adek','Adek'],['i','Ibu Bpk','Ibu & Bapak'],['s','Siti','Mba Siti']];
-const LB={b:'Abang',d:'Adek',i:'Ibu Bpk',s:'Siti'},SM={d:'Abang',s:'Ibu &amp; Bapak'};
+const LB={b:'👦🏻',d:'🧒🏻',i:'🧔🏻‍♂️👩🏻',s:'🧕🏼'},SM={d:'Abang',s:'Ibu &amp; Bapak'};
 const DEF={favb:['Nugget ayam','Telur dadar','Ayam goreng','Sosis','Perkedel'],favd:['Nugget ayam','Telur dadar','Ayam goreng','Sosis','Perkedel'],avb:[],avd:[],prot:['Ayam','Ikan kembung','Ikan dori','Udang','Cumi','Daging giling','Telur'],veg:['Bayam','Kangkung','Brokoli','Wortel','Buncis','Sawi hijau','Labu siam','Kol','Jagung'],ext:['Tahu','Tempe','Sambal','Kerupuk','Orek tempe']};
 let S={plan:{},same:{},ls:{},out:{},on:{},off:{},man:[],hid:{},qty:{},chk:{},bi:[{},{},{}],bc:{},hc:{b:1,d:1,i:2,s:1},wk:'',...JSON.parse(JSON.stringify(DEF))};
 try{const r=localStorage.getItem('mp1');if(r)S={...S,...JSON.parse(r)}}catch(e){}
@@ -139,7 +147,7 @@ function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';cle
 function renderPlan(){
  let h='<table><thead><tr><th style="width:62px"></th>'+M.map(m=>`<th>${m[1]}</th>`).join('')+'</tr></thead><tbody>';
  D.forEach((d,di)=>{h+=`<tr><th class="day">${d}</th>`;
-  M.forEach(([mk])=>{h+='<td>';
+  M.forEach(([mk])=>{h+='<td><div class="pcell">'+pc(di,mk)+'</div><div class="scell">';
    if(mk=='bek'&&S.off[di+mk]){h+=`<div class="same" style="padding:6px 2px;font-size:.85rem">🎒 <b>Tanpa bekal (libur)</b> <button data-off="${di+mk}">batal</button></div></td>`;return}
    if(mk=='bek')h+=`<div class="noprint" style="text-align:right"><button class="x" data-off="${di+mk}">🚫 libur / tanpa bekal</button></div>`;
    if(mk!='bek'&&S.out[di+mk]){h+=`<div class="same" style="padding:6px 2px;font-size:.85rem">🍴 <b>Makan di luar</b> <input data-o="${di+mk}" value="${esc(S.on[di+mk]||'')}" placeholder="di mana? (opsional)" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:60%"> <button data-out="${di+mk}">batal</button></div></td>`;return}
@@ -156,9 +164,9 @@ function renderPlan(){
  $('grid').innerHTML=h+'</tbody></table>';
 }
 document.addEventListener('input',e=>{const t=e.target;
- if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop()}
+ if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop();const td=t.closest('td'),p=t.dataset.k.split('|');if(td)td.querySelector('.pcell').innerHTML=pc(+p[0],p[1])}
  if(t.id=='wk'){S.wk=t.value;save();wkr()}
- if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save()}
+ if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save();const td=t.closest('td');if(td)td.querySelector('.pcell').innerHTML=pc(+t.dataset.o[0],t.dataset.o.slice(1))}
  if(t.dataset.hc){S.hc[t.dataset.hc]=parseFloat(t.value)||0;save();renderShop()}
  if(t.id=='bq')renderBank();
  if(t.dataset.q!==undefined){S.qty[t.dataset.q]=t.value;save()}
@@ -261,6 +269,17 @@ function calc(){const bulk={},daily={sayur:{},nabati:{},lain:{}},nab=/tahu|tempe
  return{bulk,daily}}
 const fm=x=>String(Math.round(x*10)/10);
 const pf=a=>fm(a.n)+' porsi · '+Object.entries(a.d).map(([k,v])=>k+' '+fm(v)).join(', ');
+function ptxt(di,mk,w){
+ if(mk=='mal'&&S.ls[di+w])return '= makan siang';
+ if(SM[w]&&same(di+mk+w))return ptxt(di,mk,w=='d'?'b':'i');
+ return g(`${di}|${mk}|${w}`).map(x=>x.trim()).filter(x=>x&&x!='-').join(' · ')}
+function pc(di,mk){
+ if(mk!='bek'&&S.out[di+mk])return `<div class="pl o">🍴 Makan di luar${S.on[di+mk]?': '+esc(S.on[di+mk]):''}</div>`;
+ if(mk=='bek'&&S.off[di+mk])return '<div class="pl o">🎒 Tanpa bekal (libur)</div>';
+ const ws=mk=='bek'?['b','d']:['b','d','i','s'],R=[];
+ ws.forEach(w=>{const t=ptxt(di,mk,w);if(!t)return;const r=R.find(x=>x.t==t);if(r)r.w.push(w);else R.push({t,w:[w]})});
+ if(mk=='mal'&&R.length==1&&R[0].t=='= makan siang'&&R[0].w.length==ws.length)return '<div class="pl o">= sama dgn makan siang</div>';
+ return R.map(r=>`<div class="pl ${r.w[0]}"><b>${r.w.map(w=>LB[w]).join('')}</b><span>${esc(r.t)}</span></div>`).join('')}
 function iso(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function wkr(){const v=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?S.wk:'';if(!v){S.wk='';$('wk').value='';$('wkr').textContent='........... s/d ...........';return}
  const d=new Date(v+'T00:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);const e=new Date(d);e.setDate(e.getDate()+6);
@@ -268,7 +287,7 @@ function wkr(){const v=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?S.wk:'';if(!v){S.wk=''
  S.wk=iso(d);$('wk').value=S.wk;save();$('wkr').textContent=f(d)+' s/d '+f(e)}
 function saveNow(){learnAll();save();const n=new Date();toast('Tersimpan ✓ '+n.getHours()+':'+String(n.getMinutes()).padStart(2,'0'))}
 function pv(on){$('ps').media=on?'all':'print';document.body.classList.toggle('pv',on);if(on){learnAll();document.body.style.setProperty('--pw',$('paper').value=='A3'?'420mm':'297mm');$('pvs').textContent=$('paper').value;scrollTo(0,0)}}
-$('paper').addEventListener('change',()=>{if(document.body.classList.contains('pv'))pv(1)});
+$('paper').addEventListener('change',()=>{document.body.style.setProperty('--pf',$('paper').value=='A3'?'11.5pt':'8.5pt');if(document.body.classList.contains('pv'))pv(1)});
 Object.keys(S.hc).forEach(k=>{const e=document.querySelector('[data-hc="'+k+'"]');if(e)e.value=S.hc[k]});
 wkr();
 learnAll();renderPlan();chips();renderShop();
