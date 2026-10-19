@@ -55,6 +55,21 @@ th.day{width:62px;background:var(--bg);font-size:.9rem;text-align:center;vertica
 .note{color:var(--mut);font-size:.85rem}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;display:none;font-size:.85rem}
 .pt{display:none}
+#mob{display:none}
+.md{display:flex;gap:4px;overflow-x:auto;padding:2px 0 8px;position:sticky;top:0;background:var(--bg);z-index:3}
+.md button{flex:1;min-width:44px;padding:9px 0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:inherit}
+.md button.on{background:var(--acc);color:var(--accI);border-color:var(--acc)}
+.mt{margin:6px 0;font-size:1.1rem}
+.mc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.mp{margin:8px 0;padding:8px;border-radius:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mp>.mpb,.mp .same,.mp .f0{grid-column:1/-1}
+.mpb{display:flex;justify-content:space-between;align-items:center;font-size:.9rem}
+.mp.b{background:var(--a)}.mp.d{background:var(--d)}.mp.i{background:var(--i)}.mp.s{background:var(--s)}
+.mp input,.mc .mo{width:100%;min-width:0;padding:9px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:16px}
+.mp .same{font-size:.85rem;color:var(--ink)}
+.mc .x{padding:6px 8px;font-size:.8rem}
+@media (max-width:760px){#scr{display:none}#mob{display:block}body.pv #scr{display:block}body.pv #mob{display:none}.ph{flex-wrap:wrap;gap:6px}section{padding:0 10px 24px}nav{padding:10px;overflow-x:auto}}
 .pcell{display:none}
 .pl{display:flex;gap:4px;align-items:baseline;margin:2px 0;font-size:var(--pf,8.5pt);line-height:1.25}
 .pl b{flex:none;padding:0 4px;border-radius:6px;font-size:1.05em;white-space:nowrap}
@@ -87,7 +102,7 @@ body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;co
 <section id="plan" class="on">
  <div class="ph"><h2>Menu minggu: <input type="date" id="wk" class="noprint" aria-label="Pilih tanggal dalam minggu ini" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:150px"> <span id="wkr"></span></h2>
  <div class="leg"><span class="b">👦🏻 Abang</span><span class="d">🧒🏻 Adek</span><span class="i">🧔🏻‍♂️👩🏻 Ibu &amp; Bapak</span><span class="s">🧕🏼 Mba Siti</span></div></div>
- <div class="scroll"><div id="grid"></div></div>
+ <div class="scroll" id="scr"><div id="grid"></div></div><div id="mob"></div>
  <p class="note noprint">Tiap slot: Protein · Sayur · Tambahan (tahu, tempe, sambal). Adek otomatis sama dengan Abang, Mba Siti sama dengan Ibu &amp; Bapak. Klik “ubah” kalau menunya beda. Isian pertama bebas diisi menu apa saja (misal “Koko Krunch”). Di Makan Malam ada tombol ↑ untuk menyamakan dengan makan siang. Tersimpan otomatis di browser ini.</p>
 </section>
 
@@ -144,7 +159,7 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',2200)}
 
-function renderPlan(){
+function renderTbl(){
  let h='<table><thead><tr><th style="width:62px"></th>'+M.map(m=>`<th>${m[1]}</th>`).join('')+'</tr></thead><tbody>';
  D.forEach((d,di)=>{h+=`<tr><th class="day">${d}</th>`;
   M.forEach(([mk])=>{h+='<td><div class="pcell">'+pc(di,mk)+'</div><div class="scell">';
@@ -164,19 +179,20 @@ function renderPlan(){
  $('grid').innerHTML=h+'</tbody></table>';
 }
 document.addEventListener('input',e=>{const t=e.target;
- if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop();const td=t.closest('td'),p=t.dataset.k.split('|');if(td)td.querySelector('.pcell').innerHTML=pc(+p[0],p[1])}
+ if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop();const td=t.closest('td'),p=t.dataset.k.split('|');if(td)td.querySelector('.pcell').innerHTML=pc(+p[0],p[1]);else renderTbl()}
  if(t.id=='wk'){S.wk=t.value;save();wkr()}
- if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save();const td=t.closest('td');if(td)td.querySelector('.pcell').innerHTML=pc(+t.dataset.o[0],t.dataset.o.slice(1))}
+ if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save();const td=t.closest('td');if(td)td.querySelector('.pcell').innerHTML=pc(+t.dataset.o[0],t.dataset.o.slice(1));else renderTbl()}
  if(t.dataset.hc){S.hc[t.dataset.hc]=parseFloat(t.value)||0;save();renderShop()}
  if(t.id=='bq')renderBank();
  if(t.dataset.q!==undefined){S.qty[t.dataset.q]=t.value;save()}
  if(t.dataset.m!==undefined){const m=S.man.find(x=>x.id==t.dataset.m);if(m){m.t=t.value;save()}}
  if(t.dataset.c!==undefined){S.chk[t.dataset.c]=t.checked;save()}});
 document.addEventListener('click',e=>{const t=e.target;
- if(t.dataset.t&&t.closest('#grid')){S.same[t.dataset.t]=!same(t.dataset.t);save();renderPlan();renderShop()}
+ if(t.dataset.t&&t.closest('#grid,#mob')){S.same[t.dataset.t]=!same(t.dataset.t);save();renderPlan();renderShop()}
  if(t.dataset.tab||t.closest('nav')&&t.dataset.t){tab(t.dataset.t)}
  if(t.dataset.l!==undefined){const k=t.dataset.l;if(k.length==1)['b','d','i','s'].forEach(w=>S.ls[k+w]=false);else S.ls[k]=!S.ls[k];save();renderPlan();renderShop()}
  if(t.dataset.la!==undefined){['b','d','i','s'].forEach(w=>S.ls[t.dataset.la+w]=true);save();renderPlan();renderShop()}
+ if(t.dataset.dy!==undefined){mdy=+t.dataset.dy;renderMob()}
  if(t.dataset.pb!==undefined)putBank(t.dataset.pb);
  if(t.dataset.db!==undefined){delete S.bc[t.dataset.db];save();renderBank()}
  if(t.dataset.h!==undefined){S.hid[t.dataset.h]=true;save();renderShop()}
@@ -280,6 +296,23 @@ function pc(di,mk){
  ws.forEach(w=>{const t=ptxt(di,mk,w);if(!t)return;const r=R.find(x=>x.t==t);if(r)r.w.push(w);else R.push({t,w:[w]})});
  if(mk=='mal'&&R.length==1&&R[0].t=='= makan siang'&&R[0].w.length==ws.length)return '<div class="pl o">= sama dgn makan siang</div>';
  return R.map(r=>`<div class="pl ${r.w[0]}"><b>${r.w.map(w=>LB[w]).join('')}</b><span>${esc(r.t)}</span></div>`).join('')}
+const NM={b:'Abang',d:'Adek',i:'Ibu &amp; Bapak',s:'Mba Siti'};
+let mdy=(new Date().getDay()+6)%7;
+function renderPlan(){renderTbl();renderMob()}
+function renderMob(){$('mob').innerHTML=`<div class="md">${D.map((d,i)=>`<button data-dy="${i}" class="${i==mdy?'on':''}">${d.slice(0,3)}</button>`).join('')}</div><h3 class="mt">${D[mdy]}</h3>`+M.map(([mk])=>mcell(mdy,mk)).join('')}
+function mcell(di,mk){
+ const T=M.find(x=>x[0]==mk)[1],ws=mk=='bek'?['b','d']:['b','d','i','s'],k=di+mk;
+ const hb=(mk=='mal'?`<button class="x" data-la="${di}">\u2191 semua = siang</button>`:'')+(mk=='bek'?`<button class="x" data-off="${k}">${S.off[k]?'batal libur':'\ud83d\udeab libur'}</button>`:`<button class="x" data-out="${k}">${S.out[k]?'batal':'\ud83c\udf74 di luar'}</button>`);
+ let body;
+ if(mk=='bek'&&S.off[k])body='<p class="note">\ud83c\udf92 Tanpa bekal (libur)</p>';
+ else if(mk!='bek'&&S.out[k])body=`<p class="note">\ud83c\udf74 Makan di luar</p><input class="mo" data-o="${k}" value="${esc(S.on[k]||'')}" placeholder="di mana? (opsional)">`;
+ else body=ws.map(w=>{const key=`${di}|${mk}|${w}`,v=g(key),ls=mk=='mal'&&S.ls[di+w],sm=SM[w]&&!ls&&same(di+mk+w);
+  const hd=`<div class="mpb"><b>${LB[w]} ${NM[w]}</b><span>${mk=='mal'?`<button class="x" data-l="${di}${w}">${ls?'ubah':'\u2191 = siang'}</button>`:''}${SM[w]&&!ls?`<button class="x" data-t="${di+mk+w}">${sm?'ubah':'= '+SM[w]}</button>`:''}</span></div>`;
+  if(ls)return `<div class="mp ${w}">${hd}<span class="same">sama dgn makan siang</span></div>`;
+  if(sm)return `<div class="mp ${w}">${hd}<span class="same">sama dgn ${SM[w]}</span></div>`;
+  return `<div class="mp ${w}">${hd}`+[0,1,2].map(i=>`<input class="f${i}${v[i].trim()=='-'?' dash':''}" data-k="${key}" data-i="${i}" list="dl${i}" value="${esc(v[i])}" placeholder="${['Protein / menu','Sayur','+ Tambahan'][i]}">`).join('')+'</div>'}).join('');
+ return `<div class="mc"><div class="mh"><b>${T}</b><span>${hb}</span></div>${body}</div>`}
+if(window.matchMedia)matchMedia('(max-width:760px)').addEventListener('change',()=>renderPlan());
 function iso(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function wkr(){const v=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?S.wk:'';if(!v){S.wk='';$('wk').value='';$('wkr').textContent='........... s/d ...........';return}
  const d=new Date(v+'T00:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);const e=new Date(d);e.setDate(e.getDate()+6);
