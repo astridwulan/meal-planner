@@ -71,7 +71,11 @@ th.day{width:84px;background:var(--bg);font-size:.9rem;text-align:center;vertica
 .mp input,.mc .mo{width:100%;min-width:0;padding:9px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:16px}
 .mp .same{font-size:.85rem;color:var(--ink)}
 .mc .x{padding:6px 8px;font-size:.8rem}
-@media (max-width:760px){#scr{display:none}#mob{display:block}body.pv #scr{display:block}body.pv #mob{display:none}.ph{flex-wrap:wrap;gap:6px}section{padding:0 10px 24px}nav{padding:10px;overflow-x:auto}}
+body.vd #scr{display:none}body.vd #mob{display:block}body.pv #scr{display:block!important}body.pv #mob{display:none!important}
+@media (max-width:760px){.ph{flex-wrap:wrap;gap:6px}section{padding:0 10px 24px}nav{padding:10px;overflow-x:auto}}
+.seg{display:inline-flex;margin-bottom:8px;border:1px solid var(--line);border-radius:999px;overflow:hidden}.seg button{border:0;background:var(--card);color:var(--ink);padding:7px 14px;font:inherit;cursor:pointer}.seg button.on{background:var(--acc);color:var(--accI)}
+.md button{display:flex;flex-direction:column;align-items:center;gap:1px;position:relative}.md small{font-size:.7rem;opacity:.8}.md i{position:absolute;top:2px;right:5px;font-size:.5rem;color:var(--acc);font-style:normal}.md button.on i{color:var(--accI)}
+.mcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;align-items:start}#mob{max-width:1100px}.mh b{font-size:1rem}
 .pcell{display:none}
 .pl{display:flex;gap:4px;align-items:baseline;margin:2px 0;font-size:var(--pf,8.5pt);line-height:1.25}
 .pl b{flex:none;padding:0 4px;border-radius:6px;font-size:1.05em;white-space:nowrap}
@@ -95,7 +99,7 @@ body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;co
  .pcell{display:block}
  .r input.dash{color:transparent;border-bottom-color:transparent}
  .pt{display:block;font-size:10pt}
-</style></head><body>
+</style></head><body class="vd">
 <header><h1>🍽️ Meal Planner (hari ke samping)</h1>
 <div class="tools"><select id="paper" aria-label="Ukuran kertas"><option value="A4">A4</option><option value="A3">A3</option></select><button class="btn" onclick="saveNow()">Simpan</button><button class="btn" onclick="pv(1)">Preview</button><button class="btn pri" onclick="doPrint()">Cetak</button></div></header>
 <div id="pvbar"><span>Preview cetak (<span id="pvs">A4</span> landscape)</span><span class="tools"><button class="btn" onclick="pv(0)">Kembali edit</button><button class="btn pri" onclick="doPrint()">Cetak</button></span></div>
@@ -104,6 +108,7 @@ body.pv section.on{max-width:var(--pw,297mm);margin:10px auto;background:#fff;co
 <section id="plan" class="on">
  <div class="ph"><h2>Menu minggu: <input type="date" id="wk" class="noprint" aria-label="Pilih tanggal dalam minggu ini" style="border:0;border-bottom:1px dotted var(--line);background:transparent;width:150px"> <span id="wkr"></span></h2>
  <div class="leg"><span class="b">👦🏻 Abang</span><span class="d">🧒🏻 Adek</span><span class="i">🧔🏻‍♂️👩🏻 Ibu &amp; Bapak</span><span class="s">🧕🏼 Mba Siti</span></div></div>
+ <div class="seg noprint"><button data-vw="d" class="on">📅 Per hari</button><button data-vw="w">📋 Seminggu</button></div>
  <div class="scroll" id="scr"><div id="grid"></div></div><div id="mob"></div>
  <p class="note noprint">Tiap slot: Protein · Sayur · Tambahan (tahu, tempe, sambal). Adek otomatis sama dengan Abang, Mba Siti sama dengan Ibu &amp; Bapak. Klik “ubah” kalau menunya beda. Isian pertama bebas diisi menu apa saja (misal “Koko Krunch”). Di Makan Malam ada tombol ↑ untuk menyamakan dengan makan siang. Tersimpan otomatis di browser ini.</p>
 </section>
@@ -181,7 +186,7 @@ function renderTbl(){
  $('grid').innerHTML=h+'</tbody></table>';
 }
 document.addEventListener('input',e=>{const t=e.target;
- if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop();const td=t.closest('td'),p=t.dataset.k.split('|');if(td)td.querySelector('.pcell').innerHTML=pc(+p[0],p[1]);else renderTbl()}
+ if(t.dataset.k){const v=g(t.dataset.k).slice();v[t.dataset.i]=t.value;t.classList.toggle('dash',t.value.trim()=='-');S.plan[t.dataset.k]=v;save();renderShop();const td=t.closest('td'),p=t.dataset.k.split('|');if(td)td.querySelector('.pcell').innerHTML=pc(+p[0],p[1]);else renderTbl();const nv=$('mdn');if(nv)nv.innerHTML=mnav()}
  if(t.id=='wk'){S.wk=t.value;save();wkr()}
  if(t.dataset.o!==undefined){S.on[t.dataset.o]=t.value;save();const td=t.closest('td');if(td)td.querySelector('.pcell').innerHTML=pc(+t.dataset.o[0],t.dataset.o.slice(1));else renderTbl()}
  if(t.dataset.hc){S.hc[t.dataset.hc]=parseFloat(t.value)||0;save();renderShop()}
@@ -195,6 +200,8 @@ document.addEventListener('click',e=>{const t=e.target;
  if(t.dataset.l!==undefined){const k=t.dataset.l;if(k.length==1)['b','d','i','s'].forEach(w=>S.ls[k+w]=false);else S.ls[k]=!S.ls[k];save();renderPlan();renderShop()}
  if(t.dataset.la!==undefined){['b','d','i','s'].forEach(w=>S.ls[t.dataset.la+w]=true);save();renderPlan();renderShop()}
  if(t.dataset.dy!==undefined){mdy=+t.dataset.dy;renderMob()}
+ if(t.dataset.rd){const p=t.dataset.rd.split('|');put(idea(p[2]),p[2],p[1],p[0])}
+ if(t.dataset.vw){S.view=t.dataset.vw;save();applyView()}
  if(t.dataset.pb!==undefined)putBank(t.dataset.pb);
  if(t.dataset.db!==undefined){delete S.bc[t.dataset.db];save();renderBank()}
  if(t.dataset.h!==undefined){S.hid[t.dataset.h]=true;save();renderShop()}
@@ -301,7 +308,14 @@ function pc(di,mk){
 const NM={b:'Abang',d:'Adek',i:'Ibu &amp; Bapak',s:'Mba Siti'};
 let mdy=(new Date().getDay()+6)%7;
 function renderPlan(){renderTbl();renderMob()}
-function renderMob(){$('mob').innerHTML=`<div class="md">${D.map((d,i)=>`<button data-dy="${i}" class="${i==mdy?'on':''}">${d.slice(0,3)}</button>`).join('')}</div><h3 class="mt">${D[mdy]}</h3>`+M.map(([mk])=>mcell(mdy,mk)).join('')}
+function renderMobOld(){$('mob').innerHTML=`<div class="md">${D.map((d,i)=>`<button data-dy="${i}" class="${i==mdy?'on':''}">${d.slice(0,3)}</button>`).join('')}</div><h3 class="mt">${D[mdy]}</h3>`+M.map(([mk])=>mcell(mdy,mk)).join('')}
+const IC={sar:'\ud83c\udf05',bek:'\ud83c\udf92',sia:'\u2600\ufe0f',mal:'\ud83c\udf19'};
+function applyView(){document.body.classList.toggle('vd',S.view!='w');document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.vw==(S.view=='w'?'w':'d')))}
+function mnav(){const bd=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?new Date(S.wk+'T00:00:00'):null;
+ return D.map((d,i)=>{let dn='';if(bd){const x=new Date(bd);x.setDate(x.getDate()+i);dn=x.getDate()}
+  const f=Object.keys(S.plan).some(k=>k.startsWith(i+'|')&&S.plan[k].some(z=>z.trim()&&z.trim()!='-'))||['sar','bek','sia','mal'].some(m=>S.out[i+m]||S.off[i+m]);
+  return `<button data-dy="${i}" class="${i==mdy?'on':''}"><span>${d.slice(0,3)}</span>${dn?`<small>${dn}</small>`:''}${f?'<i>\u25cf</i>':''}</button>`}).join('')}
+function renderMob(){$('mob').innerHTML=`<div class="md" id="mdn">${mnav()}</div><h3 class="mt">${D[mdy]}</h3><div class="mcs">`+M.map(([mk])=>mcell(mdy,mk)).join('')+'</div>'}
 function mcell(di,mk){
  const T=M.find(x=>x[0]==mk)[1],ws=mk=='bek'?['b','d']:['b','d','i','s'],k=di+mk;
  const hb=(mk=='mal'?`<button class="x" data-la="${di}">\u2191 semua = siang</button>`:'')+(mk=='bek'?`<button class="x" data-off="${k}">${S.off[k]?'batal libur':'\ud83d\udeab libur'}</button>`:`<button class="x" data-out="${k}">${S.out[k]?'batal':'\ud83c\udf74 di luar'}</button>`);
@@ -309,21 +323,21 @@ function mcell(di,mk){
  if(mk=='bek'&&S.off[k])body='<p class="note">\ud83c\udf92 Tanpa bekal (libur)</p>';
  else if(mk!='bek'&&S.out[k])body=`<p class="note">\ud83c\udf74 Makan di luar</p><input class="mo" data-o="${k}" value="${esc(S.on[k]||'')}" placeholder="di mana? (opsional)">`;
  else body=ws.map(w=>{const key=`${di}|${mk}|${w}`,v=g(key),ls=mk=='mal'&&S.ls[di+w],sm=SM[w]&&!ls&&same(di+mk+w);
-  const hd=`<div class="mpb"><b>${LB[w]} ${NM[w]}</b><span>${mk=='mal'?`<button class="x" data-l="${di}${w}">${ls?'ubah':'\u2191 = siang'}</button>`:''}${SM[w]&&!ls?`<button class="x" data-t="${di+mk+w}">${sm?'ubah':'= '+SM[w]}</button>`:''}</span></div>`;
+  const hd=`<div class="mpb"><b>${LB[w]} ${NM[w]}</b><span>${!ls&&!sm?`<button class="x" data-rd="${key}" title="Acak ide">\ud83c\udfb2</button>`:''}${mk=='mal'?`<button class="x" data-l="${di}${w}">${ls?'ubah':'\u2191 = siang'}</button>`:''}${SM[w]&&!ls?`<button class="x" data-t="${di+mk+w}">${sm?'ubah':'= '+SM[w]}</button>`:''}</span></div>`;
   if(ls)return `<div class="mp ${w}">${hd}<span class="same">sama dgn makan siang</span></div>`;
   if(sm)return `<div class="mp ${w}">${hd}<span class="same">sama dgn ${SM[w]}</span></div>`;
   return `<div class="mp ${w}">${hd}`+[0,1,2].map(i=>`<input class="f${i}${v[i].trim()=='-'?' dash':''}" data-k="${key}" data-i="${i}" list="dl${i}" value="${esc(v[i])}" placeholder="${['Protein / menu','Sayur','+ Tambahan'][i]}">`).join('')+'</div>'}).join('');
- return `<div class="mc"><div class="mh"><b>${T}</b><span>${hb}</span></div>${body}</div>`}
+ return `<div class="mc"><div class="mh"><b>${IC[mk]} ${T}</b><span>${hb}</span></div>${body}</div>`}
 if(window.matchMedia)matchMedia('(max-width:760px)').addEventListener('change',()=>renderPlan());
 function iso(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 function wkr(){const v=/^\d{4}-\d\d-\d\d$/.test(S.wk||'')?S.wk:'';if(!v){S.wk='';$('wk').value='';$('wkr').textContent='........... s/d ...........';return}
  const d=new Date(v+'T00:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);const e=new Date(d);e.setDate(e.getDate()+6);
  const f=x=>x.getDate()+' '+['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][x.getMonth()]+' '+x.getFullYear();
- S.wk=iso(d);$('wk').value=S.wk;save();$('wkr').textContent=f(d)+' s/d '+f(e)}
+ S.wk=iso(d);$('wk').value=S.wk;save();$('wkr').textContent=f(d)+' s/d '+f(e);const nv=$('mdn');if(nv)nv.innerHTML=mnav()}
 function saveNow(){learnAll();save();const n=new Date();toast('Tersimpan ✓ '+n.getHours()+':'+String(n.getMinutes()).padStart(2,'0'))}
 function pv(on){$('ps').media=on?'all':'print';document.body.classList.toggle('pv',on);if(on){learnAll();document.body.style.setProperty('--pw',$('paper').value=='A3'?'420mm':'297mm');$('pvs').textContent=$('paper').value;scrollTo(0,0)}}
 $('paper').addEventListener('change',()=>{document.body.style.setProperty('--pf',$('paper').value=='A3'?'11.5pt':'8.5pt');if(document.body.classList.contains('pv'))pv(1)});
-Object.keys(S.hc).forEach(k=>{const e=document.querySelector('[data-hc="'+k+'"]');if(e)e.value=S.hc[k]});
+applyView();Object.keys(S.hc).forEach(k=>{const e=document.querySelector('[data-hc="'+k+'"]');if(e)e.value=S.hc[k]});
 wkr();
 learnAll();renderPlan();chips();renderShop();
 </script></body></html>
